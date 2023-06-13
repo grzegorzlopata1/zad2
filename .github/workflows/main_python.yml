@@ -1,0 +1,36 @@
+name: Docker Build
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v1
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v1
+
+      - name: Check out code
+        uses: actions/checkout@v2
+
+      - name: Build and push Docker image for arm64
+        uses: docker/build-push-action@v2
+        with:
+          context: .
+          push: true
+          platforms: linux/arm64/v8
+          tags: docker.pkg.github.com/${{ github.repository }}/obraz_python_ga-arm64:latest
+
+      - name: Build and push Docker image for amd64
+        uses: docker/build-push-action@v2
+        with:
+          context: .
+          push: true
+          platforms: linux/amd64
+          tags: docker.pkg.github.com/${{ github.repository }}/obraz_python_ga-amd64:latest
